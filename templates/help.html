@@ -1,0 +1,56 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/help.css') }}">
+
+    <!-- Favicon's generated with thanks to https://favicon.io/favicon-generator/ -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
+    <link rel="manifest" href="/static/site.webmanifest">
+</head>
+
+<body>
+    <h1>Bunny3 commands</h1>
+    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search for function/aliases."
+        style="width: 100%; font-size: 16px; padding: 12px 20px 12px 40px; border: 1px solid #ddd; margin-bottom: 12px;">
+    <table id="helpTable">
+        <tbody>
+        <tr class="header">
+            <th>Aliases</th>
+            <th>Command Name</th>
+            <th>Description</th>
+            <th>#</th>
+        </tr>
+        {% for c in table %}
+        <tr>
+            <td>{{ c }}</td>
+            <td>{{table[c].name}}</td>
+            <td>{{table[c].description}}</td>
+            <td>{{table[c].runCount}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    <script>
+        function filterTable() {
+            var input = document.getElementById("searchInput");
+            var filter = input.value.toUpperCase();
+            var table = document.getElementById("helpTable");
+            var tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td");
+                if (td.length > 0) {
+                    if (
+                        td[0].innerHTML.toUpperCase().indexOf(filter) > -1 
+                        || td[1].innerHTML.toUpperCase().indexOf(filter) > -1 
+                        || td[2].innerHTML.toUpperCase().indexOf(filter) > -1
+                     ) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }    
+        }    
+    </script>
+</body>
