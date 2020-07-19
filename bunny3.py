@@ -1,9 +1,35 @@
+import pkgutil
 import re
-from commands import Bunny
+from inspect import getmembers, isclass
 
 import flask
 
+from command import BunnyCommand
+
 DEFAULT_URL = "https://www.google.com/"
+
+
+class Bunny(object):
+    def __init__(self):
+        self.load_commands()
+
+    def load_commands(self):
+        self.aliasDict = {}
+        self.commandDict = {}
+        self.commandDir = "commands"
+
+        for _, commandname, _ in pkgutil.iter_modules([self.commandDir]):
+            full_commandname = "%s.%s" % (self.commandDir, commandname)
+            command = __import__(full_commandname, fromlist=[full_commandname])
+            for _, obj in getmembers(command, isclass):
+                print(obj)
+                if issubclass(obj, BunnyCommand):
+                    if obj is not BunnyCommand:
+                        o = obj()
+                        self.commandDict[", ".join(o.aliases)] = o
+                        for a in o.aliases:
+                            self.aliasDict[a] = o
+
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
