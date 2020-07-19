@@ -22,7 +22,6 @@ class Bunny(object):
             full_commandname = "%s.%s" % (self.commandDir, commandname)
             command = __import__(full_commandname, fromlist=[full_commandname])
             for _, obj in getmembers(command, isclass):
-                print(obj)
                 if issubclass(obj, BunnyCommand):
                     if obj is not BunnyCommand:
                         o = obj()
@@ -66,8 +65,9 @@ def route():
         if re.match(key, arg):
             return flask.redirect(bunnyAliases[key].run(arg, flask.request))
 
-    # Otherwise we fall back to redirecting to wherever...
-    return flask.redirect(flask.url_for("default"))
+    # Otherwise we fall back to redirecting to the default...
+    # TODO: Make this configurable with default fallback options
+    return flask.redirect(bunnyAliases.get("g").run(arg, flask.request))
 
 
 if __name__ == "__main__":

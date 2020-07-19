@@ -12,7 +12,7 @@ class google(BunnyCommand):
 
     def run(self, args, request):
         self.runCount += 1
-        print(self.runCount)
+        print(self.name + ": " + str(self.runCount))
         if args:
             return "https://www.google.com/search?q=%s" % qp(args)
         else:
