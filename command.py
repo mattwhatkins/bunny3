@@ -6,6 +6,7 @@ class BunnyCommand(object):
         self.description = ""
         self.name = ""
         self.runCount = 0
+        self.url = ""
 
     def run(self, args, request=None):
         raise NotImplementedError

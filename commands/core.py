@@ -9,14 +9,13 @@ class google(BunnyCommand):
         self.aliases = ["g", "google"]
         self.description = "Google Search"
         self.name = "Google"
+        self.url = "https://www.google.com/"
 
     def run(self, args, request):
-        self.runCount += 1
-        print(self.name + ": " + str(self.runCount))
         if args:
-            return "https://www.google.com/search?q=%s" % qp(args)
+            return f"{self.url}search?q={qp(args)}"
         else:
-            return "https://www.google.com/"
+            return self.url
 
 
 class list(BunnyCommand):
@@ -27,6 +26,7 @@ class list(BunnyCommand):
         self.name = "List"
 
     def run(self, args, request):
-        self.runCount += 1
-        print(self.name + ": " + str(self.runCount))
-        return "%slist" % request.url_root
+        # TODO: url_root - It would be good to have this configured somewhere
+        if self.url == "":
+            self.url = f"{request.url_root}list"
+        return self.url

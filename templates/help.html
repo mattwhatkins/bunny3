@@ -19,6 +19,7 @@
                 <th>Alias(es)</th>
                 <th>Description</th>
                 <th>Module</th>
+                <th>URL</th>
                 <th>Run Count</th>
             </tr>
             {% for c in table %}
@@ -27,6 +28,7 @@
                 <td>{{c}}</td>
                 <td>{{table[c].description}}</td>
                 <td>{{table[c].__module__.split(".")[1]}}</td>
+                <td>{{table[c].url}}</td>
                 <td>{{table[c].runCount}}</td>
             </tr>
             {% endfor %}

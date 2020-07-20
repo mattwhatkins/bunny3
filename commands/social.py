@@ -9,9 +9,10 @@ class youtube(BunnyCommand):
         self.aliases = ["youtube"]
         self.description = "Youtube Search"
         self.name = "Youtube"
+        self.url = "https://www.youtube.com/"
 
     def run(self, args, request):
         if args:
-            return "https://www.youtube.com/results?search_query=%s" % qp(args)
+            return f"{self.url}results?search_query={qp(args)}"
         else:
-            return "https://www.youtube.com/"
+            return self.url
