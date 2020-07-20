@@ -8,7 +8,7 @@ class amazon(BunnyCommand):
         super().__init__()
         self.aliases = ["amazon"]
         self.description = "Amazon search"
-        self.name = "Hotukdeals"
+        self.name = "Amazon"
         self.url = "https://www.amazon.co.uk/"
 
     def run(self, args, request):
