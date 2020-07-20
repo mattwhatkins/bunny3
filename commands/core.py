@@ -30,17 +30,3 @@ class list(BunnyCommand):
         self.runCount += 1
         print(self.name + ": " + str(self.runCount))
         return "%slist" % request.url_root
-
-
-class youtube(BunnyCommand):
-    def __init__(self):
-        super().__init__()
-        self.aliases = ["youtube"]
-        self.description = "Youtube Search"
-        self.name = "Youtube"
-
-    def run(self, args, request):
-        if args:
-            return "https://www.youtube.com/results?search_query=%s" % qp(args)
-        else:
-            return "https://www.youtube.com/"

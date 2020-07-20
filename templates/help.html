@@ -14,21 +14,23 @@
         style="width: 100%; font-size: 16px; padding: 12px 20px 12px 40px; border: 1px solid #ddd; margin-bottom: 12px;">
     <table id="helpTable">
         <tbody>
-        <tr class="header">
-            <th>Aliases</th>
-            <th>Command Name</th>
-            <th>Description</th>
-            <th>#</th>
-        </tr>
-        {% for c in table %}
-        <tr>
-            <td>{{ c }}</td>
-            <td>{{table[c].name}}</td>
-            <td>{{table[c].description}}</td>
-            <td>{{table[c].runCount}}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
+            <tr class="header">
+                <th>Command Name</th>
+                <th>Alias(es)</th>
+                <th>Description</th>
+                <th>Module</th>
+                <th>Run Count</th>
+            </tr>
+            {% for c in table %}
+            <tr>
+                <td>{{table[c].name}}</td>
+                <td>{{c}}</td>
+                <td>{{table[c].description}}</td>
+                <td>{{table[c].__module__.split(".")[1]}}</td>
+                <td>{{table[c].runCount}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     <script>
         function filterTable() {
@@ -41,16 +43,16 @@
                 td = tr[i].getElementsByTagName("td");
                 if (td.length > 0) {
                     if (
-                        td[0].innerHTML.toUpperCase().indexOf(filter) > -1 
-                        || td[1].innerHTML.toUpperCase().indexOf(filter) > -1 
+                        td[0].innerHTML.toUpperCase().indexOf(filter) > -1
+                        || td[1].innerHTML.toUpperCase().indexOf(filter) > -1
                         || td[2].innerHTML.toUpperCase().indexOf(filter) > -1
-                     ) {
+                    ) {
                         tr[i].style.display = "";
                     } else {
                         tr[i].style.display = "none";
                     }
                 }
-            }    
+            }
         }    
     </script>
 </body>
