@@ -62,7 +62,7 @@ def route():
 
     # Then we check for any regex aliases
     for key in bunnyAliases.keys():
-        if re.match(key, arg):
+        if re.match(key, arg, re.IGNORECASE):
             return flask.redirect(bunnyAliases[key].run(arg, flask.request))
 
     # Otherwise we fall back to redirecting to the default...

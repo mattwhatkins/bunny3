@@ -6,7 +6,7 @@ from command import BunnyCommand
 class google(BunnyCommand):
     def __init__(self):
         super().__init__()
-        self.aliases = ["g", "google", "g.*"]
+        self.aliases = ["g", "google"]
         self.description = "Google Search"
         self.name = "Google"
 
