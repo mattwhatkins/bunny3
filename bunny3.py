@@ -15,6 +15,7 @@ class Bunny(object):
 
     def load_commands(self):
         self.aliasDict = {}
+        self.aliasRegexDict = {}
         self.commandDict = {}
         self.commandDir = "commands"
 
@@ -28,12 +29,15 @@ class Bunny(object):
                         self.commandDict[", ".join(o.aliases)] = o
                         for a in o.aliases:
                             self.aliasDict[a] = o
+                        for a in o.aliasRegexes:
+                            self.aliasRegexDict[a] = o
 
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 bunny = Bunny()
 bunnyAliases = bunny.aliasDict
+bunnyAliasRegexes = bunny.aliasRegexDict
 bunnyCommands = bunny.commandDict
 
 
@@ -62,10 +66,10 @@ def route():
         return flask.redirect(command.run(commandArgs, flask.request))
 
     # Then we check for any regex aliases
-    for key in bunnyAliases.keys():
+    for key in bunnyAliasRegexes.keys():
         if re.match(key, arg, re.IGNORECASE):
-            bunnyAliases[key].runCount += 1
-            return flask.redirect(bunnyAliases[key].run(arg, flask.request))
+            bunnyAliasRegexes[key].runCount += 1
+            return flask.redirect(bunnyAliasRegexes[key].run(arg, flask.request))
 
     # Otherwise we fall back to redirecting to the default...
     # TODO: Make this configurable with default fallback options

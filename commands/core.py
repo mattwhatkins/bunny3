@@ -7,6 +7,7 @@ class google(BunnyCommand):
     def __init__(self):
         super().__init__()
         self.aliases = ["g", "google"]
+        self.aliasRegexes = [r"g\s.*"]
         self.description = "Google Search"
         self.name = "Google"
         self.url = "https://www.google.com/"

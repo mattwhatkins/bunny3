@@ -3,6 +3,7 @@ class BunnyCommand(object):
 
     def __init__(self):
         self.aliases = []
+        self.aliasRegexes = []
         self.description = ""
         self.name = ""
         self.runCount = 0
