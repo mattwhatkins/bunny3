@@ -6,6 +6,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
     <link rel="manifest" href="/static/site.webmanifest">
+    <meta charset="utf-8" />
 </head>
 
 <body>
@@ -15,12 +16,12 @@
     <table id="helpTable">
         <tbody>
             <tr class="header">
-                <th>Command Name</th>
-                <th>Alias(es)</th>
-                <th>Description</th>
-                <th>Module</th>
-                <th>URL</th>
-                <th>Run Count</th>
+                <th onclick="sortTable(0)">Command Name</th>
+                <th onclick="sortTable(1)">Alias(es)</th>
+                <th onclick="sortTable(2)">Description</th>
+                <th onclick="sortTable(3)">Module</th>
+                <th onclick="sortTable(4)">URL</th>
+                <th onclick="sortTable(5)">Run Count</th>
             </tr>
             {% for c in table %}
             <tr>
@@ -35,26 +36,110 @@
         </tbody>
     </table>
     <script>
+        var upArrow = " ▴";
+        var downArrow = " ▾"
+
         function filterTable() {
             var input = document.getElementById("searchInput");
             var filter = input.value.toUpperCase();
+
             var table = document.getElementById("helpTable");
             var tr = table.getElementsByTagName("tr");
 
-            for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td");
-                if (td.length > 0) {
-                    if (
-                        td[0].innerHTML.toUpperCase().indexOf(filter) > -1
-                        || td[1].innerHTML.toUpperCase().indexOf(filter) > -1
-                        || td[2].innerHTML.toUpperCase().indexOf(filter) > -1
-                    ) {
+            var found, tds;
+
+            // Loop over every row to search for matches
+            for (i = 1; i < tr.length; i++) {
+                tds = tr[i].getElementsByTagName("td");
+
+                var found = false;
+                // Loop every every column in the row
+                for (j = 0; j < tds.length; j++) {
+                    // ... And if there's a match for any column we break and leave it
+                    if (tds[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
                         tr[i].style.display = "";
+                        found = true;
+                        break;
+                    }
+                }
+                // Else any columns not matching the filter are hidden
+                if (found == false) {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+
+        function sortTable(c) {
+            var sortCount = 0;
+            var sortDir = "asc";
+            var sorted = false;
+
+            var table = document.getElementById("helpTable");
+            var rows = table.rows;
+
+            var current, next;
+
+            while (!sorted) {
+                // Loop over each row and perform sort with next row
+                for (i = 1; i < (table.rows.length - 1); i++) {
+                    current = rows[i].getElementsByTagName("TD")[c];
+                    next = rows[i + 1].getElementsByTagName("TD")[c];
+
+                    if (sortDir == "asc" && current.innerHTML.toLowerCase() > next.innerHTML.toLowerCase()) {
+                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                        sortCount += 1;
+                        break;
+                    } else if (sortDir == "desc" && current.innerHTML.toLowerCase() < next.innerHTML.toLowerCase()) {
+                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                        sortCount += 1;
+                        break;
+                    }
+                }
+                // Check if we looped through all rows
+                if (i == rows.length - 1) {
+                    if (sortCount > 0) {
+                        // If we made a change, sortCount was increased and we're done
+                        sorted = true;
                     } else {
-                        tr[i].style.display = "none";
+                        // Else let's sort the other way
+                        sortDir = "desc"
                     }
                 }
             }
-        }    
+
+            // replace <th> labels with sort arrow
+            var header = rows[0].getElementsByTagName("TH")[c];
+            if (sortDir == "asc") {
+                if (header.innerText.endsWith(downArrow)) {
+                    header.innerText = header.innerText.slice(0, -2).concat(upArrow);
+                } else {
+                    header.innerText += upArrow;
+                }
+            } else {
+                if (header.innerText.endsWith(upArrow)) {
+                    header.innerText = header.innerText.slice(0, -2).concat(downArrow);
+                } else {
+                    header.innerText += downArrow;
+                }
+            }
+            clearHeadings(c);
+        }
+
+        function clearHeadings(c) {
+            var table = document.getElementById("helpTable");
+            var header;
+
+            // Loop over each <th> and remove arrows
+            for (i = 0; i < table.rows[0].cells.length; i++) {
+                // Ignore the actively sorted column
+                if (i == c) {
+                    continue;
+                }
+                header = table.rows[0].getElementsByTagName("TH")[i];
+                if (header.innerText.endsWith(downArrow) || header.innerText.endsWith(upArrow)) {
+                    header.innerText = header.innerText.slice(0, -2);
+                }
+            }
+        }
     </script>
 </body>

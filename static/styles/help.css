@@ -1,32 +1,33 @@
 #searchInput {
-  background-image: url('/static/images/searchicon.png'); /* Add a search icon to input */
-  background-position: 10px 12px; /* Position the search icon */
-  background-repeat: no-repeat; /* Do not repeat the icon image */
-  width: 100%; /* Full-width */
-  font-size: 16px; /* Increase font-size */
-  padding: 12px 20px 12px 40px; /* Add some padding */
-  border: 1px solid #ddd; /* Add a grey border */
-  margin-bottom: 12px; /* Add some space below the input */
+  /* Add a search icon to input */
+  background-image: url('/static/images/searchicon.png');
+  background-position: 10px 12px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
 }
 
 #helpTable {
-  border-collapse: collapse; /* Collapse borders */
-  width: 100%; /* Full-width */
-  border: 1px solid #ddd; /* Add a grey border */
-  font-size: 18px; /* Increase font-size */
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ddd;
+  font-size: 18px;
 }
 
-#helpTable th, #helpTable td {
-  text-align: left; /* Left-align text */
-  padding: 12px; /* Add padding */
+#helpTable th,
+#helpTable td {
+  text-align: left;
+  padding: 12px;
 }
 
 #helpTable tr {
-  /* Add a bottom border to all table rows */
   border-bottom: 1px solid #ddd;
 }
 
-#helpTable tr.header, #helpTable tr:hover {
-  /* Add a grey background color to the table header and on hover */
+#helpTable tr.header,
+#helpTable tr:hover {
   background-color: #f1f1f1;
 }
