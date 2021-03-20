@@ -10,7 +10,7 @@ This project is targetted for personal use to be ran locally, and may be expande
 2. `cd bunny3`
 3. Optional (But recommended): Configure a virtualenv or similar and activate
 4. `pip install -r requirements.txt`
-5. `python3 -m bunny.bunny`
+5. `python3 -m bunny3.bunny`
 
 ## To do
 *(Some rough notes capturing what's planned)*
