@@ -1,6 +1,6 @@
 from urllib.parse import quote_plus as qp
 
-from command import BunnyCommand
+from bunny3.command import BunnyCommand
 
 
 class vt(BunnyCommand):

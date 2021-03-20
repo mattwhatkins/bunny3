@@ -1,13 +1,13 @@
 from urllib.parse import quote_plus as qp
 
-from command import BunnyCommand
+from bunny3.command import BunnyCommand
 
 
 class google(BunnyCommand):
     def __init__(self):
         super().__init__()
         self.aliases = ["g", "google"]
-        self.aliasRegexes = [r"g\s.*"]
+        self.aliasRegexes = [r"gsearch\s.*"]
         self.description = "Google Search"
         self.name = "Google"
         self.url = "https://www.google.com/"

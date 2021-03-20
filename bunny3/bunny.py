@@ -7,7 +7,7 @@ from tinydb import TinyDB, Query
 
 import flask
 
-from command import BunnyCommand
+from bunny3.command import BunnyCommand
 
 DEFAULT_SEARCH_ENGINE = "https://www.google.com/"
 
@@ -21,15 +21,15 @@ class Bunny3(object):
         self.hashAliases()
 
     def load_commands(self):
-        """Iteratates through commands directory and loads all commands"""
+        """ Iteratates through commands directory and loads all commands """
         self.aliasDict = {}
         self.aliasRegexDict = {}
-        self.commandDict = {}
+        self.commandDict = {}  # TODO: Depricate! (Used in list)
         self.commands = {}
         self.query = Query()
 
-        for _, commandname, _ in pkgutil.iter_modules(["commands"]):
-            full_commandname = "%s.%s" % ("commands", commandname)
+        for _, commandname, _ in pkgutil.iter_modules(["bunny3/commands"]):
+            full_commandname = "%s.%s" % ("bunny3.commands", commandname)
             command = __import__(full_commandname, fromlist=[full_commandname])
             for _, obj in getmembers(command, isclass):
                 if issubclass(obj, BunnyCommand):
@@ -42,7 +42,7 @@ class Bunny3(object):
                         self.commandDict[", ".join(o.aliases)] = o
 
     def hashAliases(self):
-        """Builds a hashMap for the aliases and aliasRegexes for performance"""
+        """ Builds a hashMap for the aliases and aliasRegexes for performance """
         for cmd in self.commands:
             for a in self.commands[cmd]["aliases"]:
                 self.aliasDict[a] = self.commands[cmd]["func"]
@@ -50,7 +50,7 @@ class Bunny3(object):
                 self.aliasRegexDict[a] = self.commands[cmd]["func"]
 
     def stats(self):
-        """Initiates TinyDB for command stats"""
+        """ Initiates TinyDB for command stats """
         self.path = Path(__file__).resolve().parent
         self.dbpath = Path(self.path / "db.json")
         self.db = TinyDB(self.dbpath)
@@ -71,48 +71,46 @@ class Bunny3(object):
                 self.db.insert({"command": cmd, "count": 0})
 
 
-app = flask.Flask(__name__)
-app.config["DEBUG"] = True
-bunny = Bunny3()
-bunnyAliases = bunny.aliasDict  # Used for alias lookups
-bunnyAliasRegexes = bunny.aliasRegexDict  # Used for regex lookups
-bunnyCommands = bunny.commandDict  # Used for /list help menu
+def create_app(bunny):
+    app = flask.Flask(__name__)
+    app.config["DEBUG"] = True
 
+    @app.route("/default")
+    def default():
+        return flask.redirect(DEFAULT_SEARCH_ENGINE)
 
-@app.route("/default")
-def default():
-    return flask.redirect(DEFAULT_SEARCH_ENGINE)
+    @app.route("/list")
+    def helpPage():
+        return flask.render_template("help.html", table=bunny.commandDict)
 
+    @app.route("/search")
+    def route():
+        # Example syntax: /search?q=%s
+        arg = flask.request.args.get("q")
+        if len(arg) == 0:
+            return flask.redirect(flask.url_for("default"))
 
-@app.route("/list")
-def helpPage():
-    return flask.render_template("help.html", table=bunnyCommands)
+        # First we try to perform an exact match on the alias
+        command = bunny.aliasDict.get(arg.split()[0])
+        if command:
+            commandArgs = " ".join(arg.split()[1:])
+            command.bumpCount(bunny.db)
+            return flask.redirect(command.run(commandArgs, flask.request))
 
+        # Then we check for any regex aliases
+        for key in bunny.aliasRegexDict.keys():
+            if re.match(key, arg, re.IGNORECASE):
+                bunny.aliasRegexDict[key].bumpCount(bunny.db)
+                return flask.redirect(bunny.aliasRegexDict[key].run(arg, flask.request))
 
-@app.route("/search")
-def route():
-    # Example syntax: /search?q=%s
-    arg = flask.request.args.get("q")
-    if len(arg) == 0:
-        return flask.redirect(flask.url_for("default"))
+        # Otherwise we fall back to redirecting to the default...
+        # TODO: Make this configurable with default fallback options
+        return flask.redirect(bunny.aliasDict.get("g").run(arg, flask.request))
 
-    # First we try to perform an exact match on the alias
-    command = bunnyAliases.get(arg.split()[0])
-    if command:
-        commandArgs = " ".join(arg.split()[1:])
-        command.bumpCount(bunny.db)
-        return flask.redirect(command.run(commandArgs, flask.request))
-
-    # Then we check for any regex aliases
-    for key in bunnyAliasRegexes.keys():
-        if re.match(key, arg, re.IGNORECASE):
-            bunnyAliasRegexes[key].bumpCount(bunny.db)
-            return flask.redirect(bunnyAliasRegexes[key].run(arg, flask.request))
-
-    # Otherwise we fall back to redirecting to the default...
-    # TODO: Make this configurable with default fallback options
-    return flask.redirect(bunnyAliases.get("g").run(arg, flask.request))
+    return app
 
 
 if __name__ == "__main__":
+    bunny = Bunny3()
+    app = create_app(bunny)
     app.run()
