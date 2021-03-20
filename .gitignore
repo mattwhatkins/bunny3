@@ -156,6 +156,8 @@ Thumbs.db #thumbnail cache on Windows
 # MacOS
 .DS_Store
 
-
 # Coverage Settings
 .coverage*
+
+# Databse
+db.json
