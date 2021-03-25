@@ -159,5 +159,5 @@ Thumbs.db #thumbnail cache on Windows
 # Coverage Settings
 .coverage*
 
-# Databse
-db.json
+# Database
+bunny3/db.json
